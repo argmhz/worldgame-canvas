@@ -2,10 +2,9 @@ import Tile from './tile';
 
 export default class Jungle extends Tile {
 
+  load(){
+    this.color = "#29ab87";
+  }
     // update(timestamp){}
 
-    draw(ctx){
-      ctx.fillStyle = "#29ab87";
-      ctx.fillRect(this.x*this.width,this.y*this.height,this.width,this.height);
-    }
 }
