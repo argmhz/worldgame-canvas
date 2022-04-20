@@ -30,7 +30,7 @@ export default class MapManager {
   }
 
   get(x,y){
-    return this.tile.get(x+'-'+y);
+    return this.tiles.get(x+'-'+y);
   }
 
   getType(type){
@@ -49,20 +49,20 @@ export default class MapManager {
 
   biome(e,game,x,y) {
 
-  if (e < 0.1) return new Water(game,x,y);
-  else if (e < 0.2) return new Beach(game,x,y);
-  else if (e < 0.3) return new Grass(game,x,y);
-  else if (e < 0.4) return new Forest(game,x,y);
-  else if (e < 0.5) return new Jungle(game,x,y);
-  else if (e < 0.7) return new Hill(game,x,y);
-  else if (e < 0.9) return new Mountain(game,x,y);
+  if (e < 0.1) return new Water(game,x,y, this.tileSize);
+  else if (e < 0.2) return new Beach(game,x,y, this.tileSize);
+  else if (e < 0.3) return new Grass(game,x,y, this.tileSize);
+  else if (e < 0.4) return new Forest(game,x,y, this.tileSize);
+  else if (e < 0.5) return new Jungle(game,x,y, this.tileSize);
+  else if (e < 0.7) return new Hill(game,x,y, this.tileSize);
+  else if (e < 0.9) return new Mountain(game,x,y, this.tileSize);
 
-  else return new Snow(game,x,y);
+  else return new Snow(game,x,y, this.tileSize);
   }
 
   initialize(){
     this.tiles.forEach((item, i) => {
-        this.game.addObject(item);
+        this.game.add(item);
     });
   }
 

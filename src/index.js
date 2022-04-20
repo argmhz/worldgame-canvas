@@ -25,6 +25,7 @@ window.addEventListener('load', () => {
   setInterval(loop,1000,count);
 
   function loop(timestamp){
+
     // requestAnimationFrame(loop);
     clear(canvas,context);
     game.render(timestamp);
