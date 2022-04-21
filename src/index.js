@@ -21,13 +21,12 @@ window.addEventListener('load', () => {
   const game = new Game(canvas, context);
 
   let count = 0;
+  setInterval(loop, 500, count);
   function loop(timestamp){
-    requestAnimationFrame(loop);
     clear(canvas,context);
     game.render(count);
     count++;
   }
 
-   requestAnimationFrame(loop);
+   // requestAnimationFrame(loop);
 });
- 

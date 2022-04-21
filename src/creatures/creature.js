@@ -1,5 +1,6 @@
 import {inBounds} from '../utils.js';
 import Direction from '../direction.js';
+import Water from '../tiles/water.js';
 
 export default class Creature {
 
@@ -10,7 +11,7 @@ export default class Creature {
 
       this.tile.add(this);
 
-      let pos = this.tile.getCenter();
+      let pos = this.tile.getCenterPosition();
       this.position = {x:pos.x, y:pos.y};
       this.width = 5;
       this.height = 5;
@@ -24,16 +25,18 @@ export default class Creature {
       this.eatables = [];
     }
 
-    move(t){
-      
-      if(parseInt(t) % 10 == 0){
+    move(timestamp){
+
+
+      if(!(this.tile.getTileAt(this.direction) instanceof Water)){
         this.direction = Direction.random();
       }
-    // if(t % this.speedDivider == 0){
-        this.position.x += this.direction.x;
-        this.position.y += this.direction.y;
-    //  }
 
+      if(timestamp % 15 == 0)
+        this.direction = Direction.random();
+
+      this.position.x += this.direction.x;
+      this.position.y += this.direction.y;
 
     }
 
@@ -56,7 +59,7 @@ export default class Creature {
 
     draw(ctx){
       ctx.fillStyle = "black";
-      ctx.fillRect(this.position.x,this.position.y, 5,5);
+      ctx.fillRect(this.position.x,this.position.y, 3,3);
     }
 
 }
