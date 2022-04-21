@@ -12,6 +12,7 @@ import SimplexNoise from 'simplex-noise';
 export default class MapManager {
 
   constructor(game){
+
     this.gen = new SimplexNoise();
     this.tiles = new Map();
     this.game = game;
@@ -27,6 +28,7 @@ export default class MapManager {
         this.tiles.set(x+'-'+y, this.biome(e,game,x,y));
       }
     }
+
   }
 
   get(x,y){
@@ -35,11 +37,13 @@ export default class MapManager {
 
   getType(type){
     let entities = []
+
     this.tiles.forEach((e) => {
-      if(e.constructor.name === type){
+      if(e instanceof type){
         entities.push(e)
       }
     })
+
     return entities;
   }
 

@@ -7,6 +7,7 @@ export default class Creature {
       this.game = game;
 
       this.tile = tile;
+
       this.tile.add(this);
 
       let pos = this.tile.getCenter();
@@ -24,18 +25,22 @@ export default class Creature {
     }
 
     move(t){
-
-      if(t % this.speedDivider == 0){
-        this.position.x += this.direction.x*this.speed;
-        this.position.y += this.direction.y*this.speed;
+      
+      if(parseInt(t) % 10 == 0){
+        this.direction = Direction.random();
       }
+    // if(t % this.speedDivider == 0){
+        this.position.x += this.direction.x;
+        this.position.y += this.direction.y;
+    //  }
 
 
     }
 
     update(timestamp){
 
-      this.move();
+      this.move(timestamp);
+
 
       if(!inBounds(this.tile,this)){
         this.tile.getArea(1).forEach((nextTile, i) => {

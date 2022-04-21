@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "webpack --watch --progress --mode development"
+    "watch": "webpack --watch --devtool source-map --progress --mode development",
+    "build": "webpack --progress --mode production"
   },
   "author": "",
   "license": "ISC",

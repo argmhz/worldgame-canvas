@@ -22,17 +22,17 @@ window.addEventListener('load', () => {
 
   let count = 0;
 
-  setInterval(loop,1000,count);
+  // setInterval(loop,1000,count);
 
   function loop(timestamp){
 
-    // requestAnimationFrame(loop);
+     requestAnimationFrame(loop);
     clear(canvas,context);
     game.render(timestamp);
     timestamp++;
   }
 
-  // requestAnimationFrame(loop);
+   requestAnimationFrame(loop);
 });
 
 //
