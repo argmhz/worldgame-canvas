@@ -13,8 +13,7 @@ export default class CreatureManager {
     let waterTiles = this.game.map.getType(Water);
 
     for (var i = 0; i < 1000; i++) {
-      let f = new Fish(this.game,waterTiles[Math.floor(Math.random()*waterTiles.length)]);
-      this.game.add(f);
+      this.game.add(new Fish(this.game,waterTiles[Math.floor(Math.random()*waterTiles.length)]));
     }
 
 
