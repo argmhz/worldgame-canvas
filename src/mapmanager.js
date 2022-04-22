@@ -1,11 +1,4 @@
-import Water from './tiles/water.js';
-import Grass from './tiles/grass.js';
-import Beach from './tiles/beach.js';
-import Forest from './tiles/forest.js';
-import Jungle from './tiles/jungle.js';
-import Hill from './tiles/hill.js';
-import Mountain from './tiles/mountain.js'
-import Snow from './tiles/snow.js';
+import * as Tiles from './tiles/index.js';
 
 import SimplexNoise from 'simplex-noise';
 
@@ -53,15 +46,15 @@ export default class MapManager {
 
   biome(e,game,x,y) {
 
-  if (e < 0.1) return new Water(game,x,y, this.tileSize);
-  else if (e < 0.2) return new Beach(game,x,y, this.tileSize);
-  else if (e < 0.3) return new Grass(game,x,y, this.tileSize);
-  else if (e < 0.4) return new Forest(game,x,y, this.tileSize);
-  else if (e < 0.5) return new Jungle(game,x,y, this.tileSize);
-  else if (e < 0.7) return new Hill(game,x,y, this.tileSize);
-  else if (e < 0.9) return new Mountain(game,x,y, this.tileSize);
+  if (e < 0.1) return new Tiles.Water(game,x,y, this.tileSize);
+  else if (e < 0.2) return new Tiles.Beach(game,x,y, this.tileSize);
+  else if (e < 0.3) return new Tiles.Grass(game,x,y, this.tileSize);
+  else if (e < 0.4) return new Tiles.Forest(game,x,y, this.tileSize);
+  else if (e < 0.5) return new Tiles.Jungle(game,x,y, this.tileSize);
+  else if (e < 0.7) return new Tiles.Hill(game,x,y, this.tileSize);
+  else if (e < 0.9) return new Tiles.Mountain(game,x,y, this.tileSize);
 
-  else return new Snow(game,x,y, this.tileSize);
+  else return new Tiles.Snow(game,x,y, this.tileSize);
   }
 
   initialize(){

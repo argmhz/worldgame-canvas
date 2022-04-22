@@ -21,7 +21,7 @@ window.addEventListener('load', () => {
   const game = new Game(canvas, context);
 
   let count = 0;
-  setInterval(loop, 500, count);
+  setInterval(loop, 100, count);
   function loop(timestamp){
     clear(canvas,context);
     game.render(count);

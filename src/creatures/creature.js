@@ -1,6 +1,6 @@
 import {inBounds} from '../utils.js';
 import Direction from '../direction.js';
-import Water from '../tiles/water.js';
+import * as Tiles from '../tiles/index.js';
 
 export default class Creature {
 
@@ -18,17 +18,60 @@ export default class Creature {
 
       this.direction = Direction.random();
 
-      this.health = 0;
+      this.health = 400;
+      this.maxHealth = 1000;
       this.speedDivider = 4;
-      this.strength = 0;
+      this.strength = 10;
       this.allowedTiles = [];
       this.eatables = [];
+      this.load();
+    }
+
+    load(){}
+
+    isHungry(){
+      return this.health < (this.maxHealth*.5);
+    }
+
+    attach(entity){
+      entity.health -= Math.random()*this.strength;
+    }
+
+    eat(entity){
+      this.health = Math.random()*entity.maxHealth
+
+      this.tile.remove(entity);
+      this.game.remove(entity);
+    }
+
+    seekFood(){
+      // has this tile food?
+      this.tile.entities.forEach(entity => {
+        if(entity !== this) {
+          if(entity.isDead()){
+            this.eat(entity);
+          }
+          else {
+            this.attach(entity);
+          }
+        }
+      });
+
+      this.move()
+      // has any other food in the area
+
+      // else move a long
+    }
+
+    seekMaid(){}
+
+    isDead(){
+      return (this.health < 0);
     }
 
     move(timestamp){
 
-
-      if(!(this.tile.getTileAt(this.direction) instanceof Water)){
+      if(!(this.tile.getTileAt(this.direction) instanceof Tiles.Water)){
         this.direction = Direction.random();
       }
 
@@ -42,7 +85,13 @@ export default class Creature {
 
     update(timestamp){
 
-      this.move(timestamp);
+      if(this.isHungry()){
+        this.seekFood();
+      }
+      else {
+        this.seekMaid();
+      }
+      // this.move(timestamp);
 
 
       if(!inBounds(this.tile,this)){
@@ -55,6 +104,12 @@ export default class Creature {
         });
       }
 
+      this.health--;
+
+      if(this.health < 0){
+        this.tile.remove(this);
+        this.game.remove(this);
+      }
     }
 
     draw(ctx){
