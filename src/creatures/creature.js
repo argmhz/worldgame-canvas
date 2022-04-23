@@ -48,16 +48,30 @@ export default class Creature {
       // has this tile food?
       this.tile.entities.forEach(entity => {
         if(entity !== this) {
-          if(entity.isDead()){
-            this.eat(entity);
+
+          // is eatable
+
+          if(this.isHungry()){
+            if(entity.isDead()){
+              this.eat(entity);
+            }
+            else {
+              this.attach(entity);
+            }
           }
-          else {
-            this.attach(entity);
-          }
+
         }
       });
 
-      this.move()
+      //
+      this.tile.getArea(1).forEach((tile, i) => {
+          tile.entities.forEach((entity) => {
+            this.direction = {x:tile.x - this.tile.x, y:tile.y - this.tile.y};
+          });
+      });
+
+
+
       // has any other food in the area
 
       // else move a long
@@ -91,8 +105,8 @@ export default class Creature {
       else {
         this.seekMaid();
       }
-      // this.move(timestamp);
 
+      this.move();
 
       if(!inBounds(this.tile,this)){
         this.tile.getArea(1).forEach((nextTile, i) => {
@@ -104,7 +118,7 @@ export default class Creature {
         });
       }
 
-      this.health--;
+      if(timestamp % 100 == 0) this.health--;
 
       if(this.health < 0){
         this.tile.remove(this);
@@ -114,7 +128,7 @@ export default class Creature {
 
     draw(ctx){
       ctx.fillStyle = "black";
-      ctx.fillRect(this.position.x,this.position.y, 3,3);
+      ctx.fillRect(this.position.x,this.position.y, 5,5);
     }
 
 }
