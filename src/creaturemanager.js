@@ -15,7 +15,7 @@ export default class CreatureManager {
 
     // this.game.add(new Fish(this.game,this.game.map.get(3,2)));
     // this.game.add(new Fish(this.game,this.game.map.get(2,3)));
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 500; i++) {
       this.game.add(new Fish(this.game,waterTiles[Math.floor(Math.random()*waterTiles.length)]));
     }
 

@@ -33,7 +33,7 @@ export default class Creature {
       return this.health < (this.maxHealth*.5);
     }
 
-    attach(entity){
+    attack(entity){
       entity.health -= Math.random()*this.strength;
     }
 
@@ -56,13 +56,13 @@ export default class Creature {
               this.eat(entity);
             }
             else {
-              this.attach(entity);
+              this.attack(entity);
             }
           }
 
         }
       });
-
+      this.tile.getArea(1)
       //
       this.tile.getArea(1).forEach((tile, i) => {
           tile.entities.forEach((entity) => {
@@ -85,12 +85,6 @@ export default class Creature {
 
     move(timestamp){
 
-      if(!(this.tile.getTileAt(this.direction) instanceof Tiles.Water)){
-        this.direction = Direction.random();
-      }
-
-      if(timestamp % 15 == 0)
-        this.direction = Direction.random();
 
       this.position.x += this.direction.x;
       this.position.y += this.direction.y;
@@ -118,7 +112,10 @@ export default class Creature {
         });
       }
 
-      if(timestamp % 100 == 0) this.health--;
+      if(timestamp % 100 == 0){
+        this.health--;
+        console.log(this.health);
+      }
 
       if(this.health < 0){
         this.tile.remove(this);
@@ -126,9 +123,6 @@ export default class Creature {
       }
     }
 
-    draw(ctx){
-      ctx.fillStyle = "black";
-      ctx.fillRect(this.position.x,this.position.y, 5,5);
-    }
+    draw(ctx){}
 
 }
