@@ -21,10 +21,11 @@ export default class Fish extends Creature {
   }
 
   move(timestamp){
+    //
     if(!(this.tile.getTileAt(this.direction) instanceof Tiles.Water)){
       this.direction = Direction.random();
     }
-
+    //
     if(timestamp % 15 == 0)
       this.direction = Direction.random();
 

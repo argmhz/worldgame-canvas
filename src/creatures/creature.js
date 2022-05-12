@@ -24,6 +24,8 @@ export default class Creature {
       this.strength = 10;
       this.allowedTiles = [];
       this.eatables = [];
+      this.target = null;
+
       this.load();
     }
 
@@ -45,39 +47,50 @@ export default class Creature {
     }
 
     seekFood(){
+
+
+
       // has this tile food?
-      this.tile.entities.forEach(entity => {
+      this.tile.entities.every(entity => {
         if(entity !== this) {
 
           // is eatable
-
-          if(this.isHungry()){
-            if(entity.isDead()){
-              this.eat(entity);
-            }
-            else {
-              this.attack(entity);
+          if(this.isEatable(entity)){
+            if(this.isHungry()){
+              if(entity.isDead()){
+                this.eat(entity);
+              }
+              else {
+                this.attack(entity);
+              }
             }
           }
 
+
+
         }
       });
-      this.tile.getArea(1)
-      //
-      this.tile.getArea(1).forEach((tile, i) => {
-          tile.entities.forEach((entity) => {
-            this.direction = {x:tile.x - this.tile.x, y:tile.y - this.tile.y};
-          });
-      });
 
-
+      // //
+      // this.tile.getArea(1).every((tile, i) => {
+      //     tile.entities.every((entity) => {
+      //       if(this.isEatable(entity)){
+      //           this.direction = {x:tile.x - this.tile.x, y:tile.y - this.tile.y};
+      //           return false;
+      //       }
+      //     });
+      // });
 
       // has any other food in the area
 
       // else move a long
     }
 
-    seekMaid(){}
+    seekMate(){}
+
+    isEatable(entity){
+      return this.eatables.includes(entity);
+    }
 
     isDead(){
       return (this.health < 0);
@@ -97,7 +110,7 @@ export default class Creature {
         this.seekFood();
       }
       else {
-        this.seekMaid();
+        this.seekMate();
       }
 
       this.move();
@@ -114,7 +127,7 @@ export default class Creature {
 
       if(timestamp % 100 == 0){
         this.health--;
-        console.log(this.health);
+
       }
 
       if(this.health < 0){
