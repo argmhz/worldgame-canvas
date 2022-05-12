@@ -1,141 +1,156 @@
-import {inBounds} from '../utils.js';
+import { inBounds } from '../utils.js';
 import Direction from '../direction.js';
+import * as States from "./states/fish/";
 import * as Tiles from '../tiles/index.js';
 
 export default class Creature {
 
-    constructor(game, tile){
-      this.game = game;
+    constructor(game, tile) {
+        this.game = game;
 
-      this.tile = tile;
+        this.tile = tile;
 
-      this.tile.add(this);
+        this.tile.add(this);
 
-      let pos = this.tile.getCenterPosition();
-      this.position = {x:pos.x, y:pos.y};
-      this.width = 5;
-      this.height = 5;
+        let pos = this.tile.getCenterPosition();
+        this.position = { x: pos.x, y: pos.y };
+        this.width = 5;
+        this.height = 5;
 
-      this.direction = Direction.random();
+        this.direction = Direction.random();
 
-      this.health = 400;
-      this.maxHealth = 1000;
-      this.speedDivider = 4;
-      this.strength = 10;
-      this.allowedTiles = [];
-      this.eatables = [];
-      this.target = null;
+        this.health = 400;
+        this.maxHealth = 1000;
+        this.speedDivider = 4;
+        this.strength = 10;
+        this.allowedTiles = [];
+        this.eatables = [];
+        this.load();
+        this.target = null;
 
-      this.load();
+        this.state = null;
     }
 
-    load(){}
+    load() {}
 
-    isHungry(){
-      return this.health < (this.maxHealth*.5);
+    isHungry() {
+        return this.health < (this.maxHealth * .5);
     }
 
-    attack(entity){
-      entity.health -= Math.random()*this.strength;
+    attack(entity) {
+        entity.health -= Math.random() * this.strength;
     }
 
-    eat(entity){
-      this.health = Math.random()*entity.maxHealth
+    seekMate() {}
 
-      this.tile.remove(entity);
-      this.game.remove(entity);
+    isDead() {
+        return (this.health < 0);
     }
 
-    seekFood(){
+    move(timestamp) {
+        this.position.x += this.direction.x;
+        this.position.y += this.direction.y;
 
-
-
-      // has this tile food?
-      this.tile.entities.every(entity => {
-        if(entity !== this) {
-
-          // is eatable
-          if(this.isEatable(entity)){
-            if(this.isHungry()){
-              if(entity.isDead()){
-                this.eat(entity);
-              }
-              else {
-                this.attack(entity);
-              }
-            }
-          }
-
-
-
+        if (!inBounds(this.tile, this)) {
+            this.tile.getArea(1).forEach((nextTile, i) => {
+                if (inBounds(this, nextTile)) {
+                    this.tile.remove(this);
+                    this.tile = nextTile;
+                    this.tile.add(this);
+                }
+            });
         }
-      });
-
-      // //
-      // this.tile.getArea(1).every((tile, i) => {
-      //     tile.entities.every((entity) => {
-      //       if(this.isEatable(entity)){
-      //           this.direction = {x:tile.x - this.tile.x, y:tile.y - this.tile.y};
-      //           return false;
-      //       }
-      //     });
-      // });
-
-      // has any other food in the area
-
-      // else move a long
     }
 
-    seekMate(){}
+    update(timestamp) {
+        this.checkVitals(timestamp);
 
-    isEatable(entity){
-      return this.eatables.includes(entity);
+        this.state.update();
+
+        // this.act();
     }
 
-    isDead(){
-      return (this.health < 0);
+    draw(ctx) {}
+
+    act() {
+        // this[this.state]();
     }
 
-    move(timestamp){
+    // States
 
+    idle() {
+        this.move();
 
-      this.position.x += this.direction.x;
-      this.position.y += this.direction.y;
-
+        if (this.isHungry()) {
+            this.state = 'hunt';
+        }
     }
 
-    update(timestamp){
+    hunt() {
+        // this.tile.entities.forEach(entity => {
+        //     if (entity !== this) {
+        //         this.target = entity;
+        //         if (entity.isDead()) {
+        //             this.state = 'consume';
+        //             return;
+        //         } else {
+        //             this.attack(entity);
+        //         }
+        //     }
+        // });
+        if (this.tile.entities.length === 0) {
+            this.state = 'idle';
+            this.target = null;
+        }
+        this.tile.getArea(1)
+            //
+            // this.tile.getArea(1).forEach((tile, i) => {
+            //     tile.entities.forEach((entity) => {
+            //         this.direction = { x: tile.x - this.tile.x, y: tile.y - this.tile.y };
+            //     });
+            // });
 
-      if(this.isHungry()){
-        this.seekFood();
-      }
-      else {
-        this.seekMate();
-      }
+        this.move();
+    }
 
-      this.move();
+    setDirection(direction) {
+        this.direction = direction;
+    }
 
-      if(!inBounds(this.tile,this)){
-        this.tile.getArea(1).forEach((nextTile, i) => {
-            if(inBounds(this, nextTile)){
-              this.tile.remove(this);
-              this.tile = nextTile;
-              this.tile.add(this);
-            }
-        });
-      }
+    // Heal between 75-100% of target's health.
+    consume() {
+        let min = this.target.maxHealth * 0.75;
+        let max = this.target.maxHealth * 1;
 
-      if(timestamp % 100 == 0){
-        this.health--;
+        let heal = Math.floor(Math.random() * (max - min + 1)) + min;
 
-      }
+        this.health += heal;
 
-      if(this.health < 0){
+        // Can't go over max health.
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
+
+        this.state = 'idle';
+        this.target = null;
+    }
+
+    dead() {
         this.tile.remove(this);
         this.game.remove(this);
-      }
     }
 
-    draw(ctx){}
+    checkVitals(timestamp) {
+        if (timestamp % 100 == 0) {
+            this.health--;
+        }
 
+        if (this.health < 0) {
+            this.state = 'dead';
+        }
+    }
+
+    seek() {
+
+    }
 }
